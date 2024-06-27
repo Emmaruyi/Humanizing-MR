@@ -274,8 +274,6 @@ def main():
             send_keypoints_over_udp(text_data, udp_server_host, 1111)
             send_keypoints_over_udp(text_data2, udp_server_host, 2222)
 
-            
-
             # if list_x:  
                 # ''' 调用函数判断交往状态，还有点问题to check,但是现在不这样判断了'''
                 # interaction_result = ic.check_interaction(list_x)
