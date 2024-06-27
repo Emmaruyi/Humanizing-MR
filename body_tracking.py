@@ -216,7 +216,7 @@ def main():
     expression_on_headwearer = {}
     last_api_call_time = time.time()
     # Define the UDP server address and port
-    udp_server_host = '100.79.100.232'       #'100.78.20.208'   # Change this to the server IP address
+    udp_server_host = '100.78.20.208'       #'100.78.20.208'   # Change this to the server IP address
     # udp_server_port = 11111                 # Change this to the desired port number
     
 
@@ -288,25 +288,25 @@ def main():
                 # # print(posture_result)
                 # send_keypoints_over_udp(str(posture_result), udp_server_host, 200)
 
-            # current_time = time.time()
-            # if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
-            #     # last_api_call_time = current_time
-            #     last_udp_send_time = current_time
-            #     # start_time = time.time()
+            current_time = time.time()
+            if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
+                # last_api_call_time = current_time
+                last_udp_send_time = current_time
+                # start_time = time.time()
                 
 
-            #     threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
-            #     # end_time = time.time()
-            #     # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
-            #     print(expression_averages)
+                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
+                # end_time = time.time()
+                # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
+                print(expression_averages)
 
-            #     send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
-            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
-            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
+                send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
+                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
+                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
 
-            # if expressions_list:
-            #     for bounding_poly, expression_dict in expressions_list:
-            #         er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
+            if expressions_list:
+                for bounding_poly, expression_dict in expressions_list:
+                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
 
                 # for _, expression_dict in expressions_list:
                 #     formatted_expression_data = '\n'.join([f"{key}:{value}" for key, value in expression_dict.items()])
