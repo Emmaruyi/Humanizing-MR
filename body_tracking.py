@@ -43,14 +43,14 @@ from google.cloud import vision
 from google.oauth2 import service_account
 
 # Google Vision相关
-# os.environ['http_proxy'] = 'http://127.0.0.1:52031'
-# os.environ['https_proxy'] = 'http://127.0.0.1:52031'
+os.environ['http_proxy'] = 'http://127.0.0.1:52031'
+os.environ['https_proxy'] = 'http://127.0.0.1:52031'
 
-# credentials = service_account.Credentials.from_service_account_file(
-#     './bustling-wharf-359411-b33e8c55e506.json',
-#     scopes=['https://www.googleapis.com/auth/cloud-platform']
-# )
-# client = vision.ImageAnnotatorClient(credentials=credentials)
+credentials = service_account.Credentials.from_service_account_file(
+    './bustling-wharf-359411-b33e8c55e506.json',
+    scopes=['https://www.googleapis.com/auth/cloud-platform']
+)
+client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # Function to send keypoints over UDP
 def send_keypoints_over_udp(keypoints, host, port):
@@ -162,7 +162,7 @@ def main():
     init_params.camera_resolution = sl.RESOLUTION.HD1080  # Use HD1080 video mode
     init_params.coordinate_units = sl.UNIT.METER          # Set coordinate units
     init_params.depth_mode = sl.DEPTH_MODE.ULTRA
-    init_params.coordinate_system = sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP  # Set coordinate system, 但是这样的话骨骼画面就没有显示到TBD
+    init_params.coordinate_system = sl.COORDINATE_SYSTEM.RIGHT_HANDED_Y_UP  # Set coordinate system
     
     parse_args(init_params)
 
@@ -216,7 +216,7 @@ def main():
     expression_on_headwearer = {}
     last_api_call_time = time.time()
     # Define the UDP server address and port
-    udp_server_host = '100.78.20.208'       #'100.78.20.208'   # Change this to the server IP address
+    udp_server_host = '100.79.100.232'       #'100.78.20.208'   # Change this to the server IP address
     # udp_server_port = 11111                 # Change this to the desired port number
     
 
@@ -288,25 +288,25 @@ def main():
                 # # print(posture_result)
                 # send_keypoints_over_udp(str(posture_result), udp_server_host, 200)
 
-            current_time = time.time()
-            if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
-                # last_api_call_time = current_time
-                last_udp_send_time = current_time
-                # start_time = time.time()
+            # current_time = time.time()
+            # if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
+            #     # last_api_call_time = current_time
+            #     last_udp_send_time = current_time
+            #     # start_time = time.time()
                 
 
-                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
-                # end_time = time.time()
-                # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
-                print(expression_averages)
+            #     threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
+            #     # end_time = time.time()
+            #     # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
+            #     print(expression_averages)
 
-                send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
-                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
-                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
+            #     send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
+            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
+            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
 
-            if expressions_list:
-                for bounding_poly, expression_dict in expressions_list:
-                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
+            # if expressions_list:
+            #     for bounding_poly, expression_dict in expressions_list:
+            #         er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
 
                 # for _, expression_dict in expressions_list:
                 #     formatted_expression_data = '\n'.join([f"{key}:{value}" for key, value in expression_dict.items()])
