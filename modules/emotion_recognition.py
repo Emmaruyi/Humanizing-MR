@@ -16,7 +16,7 @@ os.environ['https_proxy'] = 'http://127.0.0.1:52031'
 
 # Google Cloud Vision API 配置
 credentials = service_account.Credentials.from_service_account_file(
-    './bustling-wharf-359411-b33e8c55e506.json',
+    './bustling-wharf-359411-3648d0880259.json',
     scopes=['https://www.googleapis.com/auth/cloud-platform']
 )
 client = vision.ImageAnnotatorClient(credentials=credentials)

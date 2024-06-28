@@ -47,7 +47,7 @@ os.environ['http_proxy'] = 'http://127.0.0.1:52031'
 os.environ['https_proxy'] = 'http://127.0.0.1:52031'
 
 credentials = service_account.Credentials.from_service_account_file(
-    './bustling-wharf-359411-b33e8c55e506.json',
+    './bustling-wharf-359411-3648d0880259.json',
     scopes=['https://www.googleapis.com/auth/cloud-platform']
 )
 client = vision.ImageAnnotatorClient(credentials=credentials)
@@ -151,7 +151,7 @@ def parse_args(init):
 
 def main():
     last_udp_send_time = time.time()
-    udp_send_interval = 0.5  # 发送间隔时间，单位为秒
+    udp_send_interval = 1  # 发送间隔时间，单位为秒
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
 
     # Create a Camera object
@@ -271,9 +271,6 @@ def main():
                 )
                 text_data2 += person_data_str
 
-            send_keypoints_over_udp(text_data, udp_server_host, 1111)
-            send_keypoints_over_udp(text_data2, udp_server_host, 2222)
-
             # if list_x:  
                 # ''' 调用函数判断交往状态，还有点问题to check,但是现在不这样判断了'''
                 # interaction_result = ic.check_interaction(list_x)
@@ -288,25 +285,27 @@ def main():
                 # # print(posture_result)
                 # send_keypoints_over_udp(str(posture_result), udp_server_host, 200)
 
-            # current_time = time.time()
-            # if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
-            #     # last_api_call_time = current_time
-            #     last_udp_send_time = current_time
-            #     # start_time = time.time()
+            current_time = time.time()
+            if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
+                # last_api_call_time = current_time
+                last_udp_send_time = current_time
+                # start_time = time.time()
                 
+                send_keypoints_over_udp(text_data, udp_server_host, 1111)
+                send_keypoints_over_udp(text_data2, udp_server_host, 2222)
 
-            #     threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
-            #     # end_time = time.time()
-            #     # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
-            #     print(expression_averages)
+                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
+                # end_time = time.time()
+                # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
+                print(expression_averages)
 
-            #     send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
-            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
-            #     send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
+                send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
+                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
+                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
 
-            # if expressions_list:
-            #     for bounding_poly, expression_dict in expressions_list:
-            #         er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
+            if expressions_list:
+                for bounding_poly, expression_dict in expressions_list:
+                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
 
                 # for _, expression_dict in expressions_list:
                 #     formatted_expression_data = '\n'.join([f"{key}:{value}" for key, value in expression_dict.items()])
