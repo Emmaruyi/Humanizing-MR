@@ -16,7 +16,7 @@ os.environ['https_proxy'] = 'http://127.0.0.1:52031'
 
 # Google Cloud Vision API 配置
 credentials = service_account.Credentials.from_service_account_file(
-    './bustling-wharf-359411-b33e8c55e506.json',
+    './linear-arcadia-428108-u4-77ca8a070ab6.json',
     scopes=['https://www.googleapis.com/auth/cloud-platform']
 )
 client = vision.ImageAnnotatorClient(credentials=credentials)
@@ -89,3 +89,6 @@ def draw_expression_on_frame(frame, bounding_poly, expression_dict, show_labels)
     if show_labels:
         expression_text = ', '.join([f'{exp}: {likelihood}' for exp, likelihood in expression_dict.items()])
         cv2.putText(frame, expression_text, (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+
+        

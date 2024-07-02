@@ -43,14 +43,14 @@ from google.cloud import vision
 from google.oauth2 import service_account
 
 # Google Vision相关
-os.environ['http_proxy'] = 'http://127.0.0.1:52031'
-os.environ['https_proxy'] = 'http://127.0.0.1:52031'
+# os.environ['http_proxy'] = 'http://127.0.0.1:52031'
+# os.environ['https_proxy'] = 'http://127.0.0.1:52031'
 
-credentials = service_account.Credentials.from_service_account_file(
-    './bustling-wharf-359411-b33e8c55e506.json',
-    scopes=['https://www.googleapis.com/auth/cloud-platform']
-)
-client = vision.ImageAnnotatorClient(credentials=credentials)
+# credentials = service_account.Credentials.from_service_account_file(
+#     './linear-arcadia-428108-u4-77ca8a070ab6.json',
+#     scopes=['https://www.googleapis.com/auth/cloud-platform']
+# )
+# client = vision.ImageAnnotatorClient(credentials=credentials)
 
 # Function to send keypoints over UDP
 def send_keypoints_over_udp(keypoints, host, port):
@@ -259,40 +259,28 @@ def main():
                     person_data += " ".join([str(elem) for elem in row]) + "\n"
                 text_data += person_data + "\n"
 
-                person_id, person_position, person_global_root_orientation, person_normal_vector, person_head_bounding_box, person_head_position, person_head_normal_vector = ic.extract_person_data(entry)
-                person_data_str = (
-                    f"ID:{person_id}\n"
-                    f"Position:{' '.join(map(str, person_position))}\n"
-                    f"Global Root Orientation:{' '.join(map(str, person_global_root_orientation))}\n"
-                    # f"Normal Vector: {person_normal_vector}\n"
-                    f"Head Position:{' '.join(map(str, person_head_position))}\n"  
-                    f"Head Bounding Box:\n" + 
-                    "\n".join([f"{' '.join(map(str, bbox_point))}" for bbox_point in person_head_bounding_box]) + "\n\n" 
-                )
-                text_data2 += person_data_str
-
-            send_keypoints_over_udp(text_data, udp_server_host, 1111)
-            send_keypoints_over_udp(text_data2, udp_server_host, 2222)
+                # person_id, person_position, person_global_root_orientation, person_normal_vector, person_head_bounding_box, person_head_position, person_head_normal_vector = ic.extract_person_data(entry)
+                # person_data_str = (
+                #     f"ID:{person_id}\n"
+                #     f"Position:{' '.join(map(str, person_position))}\n"
+                #     f"Global Root Orientation:{' '.join(map(str, person_global_root_orientation))}\n"
+                #     # f"Normal Vector: {person_normal_vector}\n"
+                #     f"Head Position:{' '.join(map(str, person_head_position))}\n"  
+                #     f"Head Bounding Box:\n" + 
+                #     "\n".join([f"{' '.join(map(str, bbox_point))}" for bbox_point in person_head_bounding_box]) + "\n\n" 
+                # )
+                # text_data2 += person_data_str
 
             # if list_x:  
-                # ''' 调用函数判断交往状态，还有点问题to check,但是现在不这样判断了'''
-                # interaction_result = ic.check_interaction(list_x)
-                # interaction_result_using_head = ic.check_interaction_using_head(list_x)
-                # send_keypoints_over_udp(str(interaction_result), udp_server_host, 100)
-                # send_keypoints_over_udp(str(interaction_result_using_head), udp_server_host, 101)
-                # send_keypoints_over_udp(str(len(list_x)), udp_server_host, 102)
-                
-
-                # ''' 调用函数判断任务处理模式，1 - 拘谨， 暂时：对随机一个人 '''
-                # posture_result = pc.classify_posture(list_x[0]['keypoint'])
-                # # print(posture_result)
-                # send_keypoints_over_udp(str(posture_result), udp_server_host, 200)
 
             current_time = time.time()
             if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
                 # last_api_call_time = current_time
                 last_udp_send_time = current_time
                 # start_time = time.time()
+
+                send_keypoints_over_udp(text_data, udp_server_host, 1111)
+                # send_keypoints_over_udp(text_data2, udp_server_host, 2222)
                 
 
                 threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
@@ -300,9 +288,12 @@ def main():
                 # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
                 print(expression_averages)
 
-                send_keypoints_over_udp(str(expression_averages),udp_server_host, 405)
-                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
-                send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
+                # send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
+                # send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
+                text_emotion_to_udp = ""
+                for _, expressions in expressions_list:
+                    text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n"
+                send_keypoints_over_udp(text_emotion_to_udp, udp_server_host, 401)
 
             if expressions_list:
                 for bounding_poly, expression_dict in expressions_list:
