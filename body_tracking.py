@@ -298,9 +298,6 @@ def main():
             if expressions_list:
                 for bounding_poly, expression_dict in expressions_list:
                     er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
-            if expressions_list:
-                for bounding_poly, expression_dict in expressions_list:
-                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
 
                 # for _, expression_dict in expressions_list:
                 #     formatted_expression_data = '\n'.join([f"{key}:{value}" for key, value in expression_dict.items()])
