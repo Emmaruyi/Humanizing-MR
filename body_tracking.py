@@ -151,7 +151,7 @@ def parse_args(init):
 
 def main():
     last_udp_send_time = time.time()
-    udp_send_interval = 0.5  # 发送间隔时间，单位为秒
+    udp_send_interval = 1  # 发送间隔时间，单位为秒
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
 
     # Create a Camera object
@@ -295,6 +295,9 @@ def main():
                     text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n"
                 send_keypoints_over_udp(text_emotion_to_udp, udp_server_host, 401)
 
+            if expressions_list:
+                for bounding_poly, expression_dict in expressions_list:
+                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
             if expressions_list:
                 for bounding_poly, expression_dict in expressions_list:
                     er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
