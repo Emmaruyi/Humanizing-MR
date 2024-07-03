@@ -151,7 +151,7 @@ def parse_args(init):
 
 def main():
     last_udp_send_time = time.time()
-    udp_send_interval = 1  # 发送间隔时间，单位为秒
+    udp_send_interval = 0.5  # 发送间隔时间，单位为秒
     print("Running Body Tracking sample ... Press 'q' to quit, or 'm' to pause or restart")
 
     # Create a Camera object
@@ -216,7 +216,7 @@ def main():
     expression_on_headwearer = {}
     last_api_call_time = time.time()
     # Define the UDP server address and port
-    udp_server_host = '100.78.20.208'       #'100.78.20.208'   # Change this to the server IP address
+    udp_server_host = '100.79.100.232'       #'100.78.20.208'   # Change this to the server IP address
     # udp_server_port = 11111                 # Change this to the desired port number
     
 
@@ -279,7 +279,7 @@ def main():
                 last_udp_send_time = current_time
                 # start_time = time.time()
 
-                send_keypoints_over_udp(text_data, udp_server_host, 1111)
+                
                 # send_keypoints_over_udp(text_data2, udp_server_host, 2222)
                 
 
@@ -292,8 +292,11 @@ def main():
                 # send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
                 text_emotion_to_udp = ""
                 for _, expressions in expressions_list:
-                    text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n"
-                send_keypoints_over_udp(text_emotion_to_udp, udp_server_host, 401)
+                    text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n\n"
+                # send_keypoints_over_udp(text_data, udp_server_host, 1111)
+                send_keypoints_over_udp("*\n".join([text_data, text_emotion_to_udp]), udp_server_host,3333)
+                
+                
 
             if expressions_list:
                 for bounding_poly, expression_dict in expressions_list:

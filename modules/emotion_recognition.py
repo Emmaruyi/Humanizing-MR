@@ -70,8 +70,10 @@ def async_detect_and_update(frame, expressions_list, expression_averages, expres
     def callback(results, averages, headwearer_expression):
         expressions_list.clear()
         expressions_list.extend(results)
+        
         expression_averages.clear()
         expression_averages.update(averages)
+        
         expression_on_headwearer.clear()
         expression_on_headwearer.update(headwearer_expression)
         # print("Averages: ", expression_averages)
