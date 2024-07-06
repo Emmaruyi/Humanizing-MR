@@ -275,36 +275,24 @@ def main():
 
             current_time = time.time()
             if current_time - last_udp_send_time >= udp_send_interval: #返回结果时间间隔
-                # last_api_call_time = current_time
                 last_udp_send_time = current_time
-                # start_time = time.time()
-
                 
-                # send_keypoints_over_udp(text_data2, udp_server_host, 2222)
-                
-
-                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
-                # end_time = time.time()
-                # print(f"async_detect_and_update took {end_time - start_time:.2f} seconds")
-                print(expression_averages)
-
-                # send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_on_headwearer.items()]), udp_server_host, 403)
-                # send_keypoints_over_udp('\n'.join([f"{key}:{value}" for key, value in expression_averages.items()]), udp_server_host, 402)
                 text_emotion_to_udp = ""
+                
+                #########################表情####################
+                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
+                print(expression_averages)
+                
                 for _, expressions in expressions_list:
                     text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n\n"
-                # send_keypoints_over_udp(text_data, udp_server_host, 1111)
-                send_keypoints_over_udp("*\n".join([text_data, text_emotion_to_udp]), udp_server_host,3333)
+                send_keypoints_over_udp(text_data, udp_server_host, 1111)
                 
                 
-
             if expressions_list:
                 for bounding_poly, expression_dict in expressions_list:
                     er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
-
-                # for _, expression_dict in expressions_list:
-                #     formatted_expression_data = '\n'.join([f"{key}:{value}" for key, value in expression_dict.items()])
-                #     send_keypoints_over_udp(formatted_expression_data, udp_server_host, 4444)
+            #########################表情####################
+                send_keypoints_over_udp("*\n".join([text_data, text_emotion_to_udp]), udp_server_host,3333)
 
             cv2.imshow("ZED | 2D View", image_left_ocv)
             key = cv2.waitKey(key_wait)
