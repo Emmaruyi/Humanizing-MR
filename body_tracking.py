@@ -216,7 +216,7 @@ def main():
     expression_on_headwearer = {}
     last_api_call_time = time.time()
     # Define the UDP server address and port
-    udp_server_host = '100.79.100.232'       #'100.78.20.208'   # Change this to the server IP address
+    udp_server_host = '192.168.1.251'       #'100.78.20.208'   # Change this to the server IP address
     # udp_server_port = 11111                 # Change this to the desired port number
     
 
@@ -280,17 +280,17 @@ def main():
                 text_emotion_to_udp = ""
                 
                 #########################表情####################
-                threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
-                print(expression_averages)
+            #     threading.Thread(target=er.async_detect_and_update, args=(image_left_ocv, expressions_list, expression_averages,expression_on_headwearer)).start()
+            #     print(expression_averages)
                 
-                for _, expressions in expressions_list:
-                    text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n\n"
-                send_keypoints_over_udp(text_data, udp_server_host, 1111)
+            #     for _, expressions in expressions_list:
+            #         text_emotion_to_udp += '\n'.join([f"{key}:{value}" for key, value in expressions.items()]) + "\n\n"
+            #     send_keypoints_over_udp(text_data, udp_server_host, 1111)
                 
                 
-            if expressions_list:
-                for bounding_poly, expression_dict in expressions_list:
-                    er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
+            # if expressions_list:
+            #     for bounding_poly, expression_dict in expressions_list:
+            #         er.draw_expression_on_frame(image_left_ocv, bounding_poly, expression_dict, True)
             #########################表情####################
                 send_keypoints_over_udp("*\n".join([text_data, text_emotion_to_udp]), udp_server_host,3333)
 
